@@ -54,10 +54,10 @@ void setup() {
 
   Wire.begin();
   lcd.begin(16, 2); // defines it is a 16 character two line display
-  lcd.noBacklight();
+  lcd.backlight();
 
-//  pinMode(stepPin, OUTPUT);
-//  pinMode(dirPin, OUTPUT);
+  //  pinMode(stepPin, OUTPUT);
+  //  pinMode(dirPin, OUTPUT);
 
   pinMode(pumpPin, OUTPUT);
   digitalWrite(pumpPin, LOW);
@@ -76,15 +76,15 @@ void setup() {
   digitalWrite(powerOnPin, HIGH);
   wifiPort.begin(9600);
   delay(1000);
-//  softSerialEvent();
 
-  timer.setInterval(15000, repeatMe);
+  timer.setInterval(5000, repeatMe);
 
   Serial.println("Arduino after setup...");
 }
 
 void loop() {
   softSerialEvent();
+  prtintOutESPMsg();
   timer.run();
   getTouch();
 
@@ -100,14 +100,14 @@ void loop() {
 
   if (button[0] == 7) { //tryb ruch silnika
 
-//    digitalWrite(dirPin, HIGH); // Enables the motor to move in a particular direction
-//    for (int x = 0; x < 20000; x++) {
-//      digitalWrite(stepPin, HIGH);
-//      delay(1500);
-//      digitalWrite(stepPin, LOW);
-//      delay(1500);
-//    }
-//    delay(1000); // One second delay
+    //    digitalWrite(dirPin, HIGH); // Enables the motor to move in a particular direction
+    //    for (int x = 0; x < 20000; x++) {
+    //      digitalWrite(stepPin, HIGH);
+    //      delay(1500);
+    //      digitalWrite(stepPin, LOW);
+    //      delay(1500);
+    //    }
+    //    delay(1000); // One second delay
 
     //    digitalWrite(dirPin, HIGH); // Enables the motor to move in a particular direction
     //    // Makes 200 pulses for making one full cycle rotation
@@ -172,18 +172,23 @@ void loop() {
     if (!backlight) {
       backlight = true;
       lcd.backlight();
-      delay(100);
+      delay(1000);
     } else {
       backlight = false;
       lcd.noBacklight();
-      delay(100);
+      delay(1000);
     }
   }
 
   if (button[0] == 14) { //show ip for 5s
     lcd.clear();
+    lcd.setCursor(0, 0); 
+    lcd.print("ESP IP printed");
+    lcd.setCursor(0, 1); 
+    lcd.print("on serial");
     wifiPort.println("getIp()");
-    delay(serialDelay);
+    delay(1000);
+    button[0] = 0;
   }
 
   delay(100);
@@ -193,35 +198,42 @@ void loop() {
 void softSerialEvent() {
 
   wifiPort.listen();
-  if (wifiPort.available()) {
+  while (wifiPort.available()) {
     // get the new byte:
     char inChar = (char)wifiPort.read();
 
     if (inChar == '\n') {
       stringCompleteWifi = true;
-    } else if (inChar != '\r') {
+      break;
+    } else {
       inputStringWifi += inChar;
     }
+//    else if (inChar != '\r') {
+//      inputStringWifi += inChar;
+//    }
   }
 }
 
-// a function to be executed periodically
+void prtintOutESPMsg() {
+  if (stringCompleteWifi) {
+
+    Serial.println(inputStringWifi);
+
+    inputStringWifi = "";
+    stringCompleteWifi = false;
+  }
+}
+
 void repeatMe() {
-  //  Serial.println("Invoking ESP...");
-  //
+  Serial.println("Invoking ESP...");
+  
   wifiPort.print("field1=");
   wifiPort.println(50);
   wifiPort.println("");
   delay(serialDelay);
 
   wifiPort.println("sendThingspeak()");
-//  softSerialEvent();
 
-  //
-  //  wifiPort.println("sendTest()");
-  //  delay(serialDelay);
-  //  wifiPort.println("getIp()");
-  //  delay(serialDelay);
 }
 
 // Restart ESP
@@ -244,7 +256,6 @@ void getTouch() {
       uint16_t contrast = 0x8000;
       if (data_out & contrast)
       {
-        //Serial.println(i);
         button[count] = i;
         count++;
         delay(1);
@@ -267,8 +278,8 @@ void getTouch() {
           {
             for (int i = 0; i < 2; i++)
             {
-              Serial.print(button[i]);
-              Serial.print("  ");
+//              Serial.print(button[i]);
+//              Serial.print("  ");
               delay(10);
             }
           }
