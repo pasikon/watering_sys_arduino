@@ -63,6 +63,7 @@ wifi_disconnect_event = function(T)
   end
 end
 
+uart.setup(0,9600,8,0,0)
 -- Register WiFi Station event callbacks
 wifi.eventmon.register(wifi.eventmon.STA_CONNECTED, wifi_connect_event)
 wifi.eventmon.register(wifi.eventmon.STA_GOT_IP, wifi_got_ip_event)
