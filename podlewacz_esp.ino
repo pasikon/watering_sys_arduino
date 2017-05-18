@@ -205,12 +205,9 @@ void softSerialEvent() {
     if (inChar == '\n') {
       stringCompleteWifi = true;
       break;
-    } else {
+    } else if (inChar != '\r') {
       inputStringWifi += inChar;
     }
-//    else if (inChar != '\r') {
-//      inputStringWifi += inChar;
-//    }
   }
 }
 
