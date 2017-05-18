@@ -1,8 +1,8 @@
 -- basic config
 wifiStation = "MOVISTAR_3C42"
-wifiPW = "PNq6NJD3qeXbxHYMbC43"
+wifiPW = "rrr"
 devName = "ESP8266_podlewacz"
-thingsSpeakKey = "1RUB0PWV56MZ3XRD"
+thingsSpeakKey = "345"
 tsChannel="270657"
 
 -- Status LEDs
