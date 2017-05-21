@@ -88,7 +88,7 @@ void loop() {
   timer.run();
   getTouch();
 
-  if (button[0] != 7 && button[0] != 15) { //tryb default
+  if (button[0] != 1 && button[0] != 7 && button[0] != 15) { //tryb default
     lcd.clear();
     lcd.setCursor(0, 0); // start postion of Humidity text on LCD
     lcd.print(button[0], 1); // 0 creates whole number, 1 two decimal
@@ -168,6 +168,9 @@ void loop() {
   }
 
   if (button[0] == 1) { //zgas zapal swiatlo
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Toggle backlight...");
     button[0] = 0;
     if (!backlight) {
       backlight = true;
@@ -225,12 +228,23 @@ void repeatMe() {
   Serial.println("Invoking ESP...");
   
   wifiPort.print("field1=");
-  wifiPort.println(50);
+  wifiPort.println(analogRead(soilInputPin1));
+  wifiPort.println("");
+  delay(serialDelay);
+
+  wifiPort.print("field2=");
+  wifiPort.println(analogRead(soilInputPin2));
+  wifiPort.println("");
+  delay(serialDelay);
+
+  wifiPort.print("field3=");
+  wifiPort.println(analogRead(soilInputPin3));
   wifiPort.println("");
   delay(serialDelay);
 
   wifiPort.println("sendThingspeak()");
 
+  delay(serialDelay);
 }
 
 // Restart ESP
